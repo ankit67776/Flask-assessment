@@ -1,92 +1,80 @@
-# User Management API
+# Full-Stack User Management CRUD Application
 
-This project is a simple, well-structured User Management REST API built with Python and Flask. It provides endpoints for Creating, Reading, Updating, and Deleting (CRUD) user resources.
+This is a full-stack web application that provides complete CRUD (Create, Read, Update, Delete) functionality for managing a list of users. The project was built with a modern tech stack and developed with the assistance of an AI agent (Google Gemini) following specific engineering standards.
 
-The primary goal of this project is to demonstrate a robust and maintainable system architecture, emphasizing clear boundaries, correctness, and resilience to change, built with AI-assistance.
+## Tech Stack
+
+- **Backend**: Python with the Flask micro-framework.
+  - `Flask-RESTful`: For building structured, resource-based APIs.
+  - `Flask-SQLAlchemy`: For ORM-based interaction with the database.
+  - `Flask-Migrate`: For handling database schema migrations.
+  - `SQLite`: As the relational database.
+- **Frontend**: React.
+  - `axios`: For making asynchronous HTTP requests to the backend API.
+- **AI-Assisted Development**: Google Gemini was used as a coding assistant.
+
+---
 
 ## Key Technical Decisions
 
-The technology and architecture were chosen to align with best practices for building scalable and maintainable web APIs.
+This section outlines the key architectural and technical decisions made during the project's development.
 
-1.  **Application Factory Pattern (`create_app`)**:
-    *   **Decision**: The application is initialized within a `create_app()` function instead of being a global object.
-    *   **Reasoning**: This pattern is fundamental for testability and scalability. It allows us to create multiple instances of the app with different configurations (e.g., a testing configuration with an in-memory database). This prevents common issues with global objects and circular dependencies.
+#### 1. Decoupled Frontend and Backend
 
-2.  **Flask-RESTful for API Resources**:
-    *   **Decision**: API endpoints are managed using `flask_restful.Resource` classes (`UserListResource`, `UserResource`) instead of traditional `@app.route` decorators.
-    *   **Reasoning**: This enforces a clean, object-oriented structure for the API. Each resource's logic (GET, POST, PUT, DELETE) is neatly encapsulated in its own class, making the codebase more organized and easier to extend than a long file of scattered route functions.
+The project is organized into two distinct directories: `api/` for the Flask backend and `frontend/` for the React application.
 
-3.  **SQLAlchemy and Flask-Migrate for Database Interaction**:
-    *   **Decision**: We used `Flask-SQLAlchemy` for ORM capabilities and `Flask-Migrate` for handling database schema migrations.
-    *   **Reasoning**: The ORM abstracts away raw SQL, preventing SQL injection vulnerabilities and making database interactions more Pythonic and readable. `Flask-Migrate` provides a repeatable, version-controlled way to evolve the database schema, which is critical for "Release Integrity" and preventing data loss during updates.
+-   **Decision**: To build the backend as a stateless, RESTful API and the frontend as a separate single-page application (SPA).
+-   **Reasoning**: This separation of concerns is a modern web development best practice. It allows the frontend and backend to be developed, deployed, and scaled independently. The API can serve various clients (web, mobile), and the frontend can be hosted on a static file server or CDN for better performance.
 
-4.  **Marshmallow for Schema Validation and Serialization**:
-    *   **Decision**: A `UserSchema` was created using `Flask-Marshmallow` to validate incoming request data and to serialize outgoing responses.
-    *   **Reasoning**: This is a crucial "Interface Safety" guardrail. It ensures that no invalid data can enter our system (e.g., a malformed email address). It also separates the concerns of data shape (schema) from the data model (database), allowing them to evolve independently.
+#### 2. Resource-Oriented API with Flask-RESTful
 
-## Getting Started
+The backend API exposes resources (Users) and defines the operations that can be performed on them using standard HTTP methods (GET, POST, PUT, DELETE).
+
+-   **Decision**: To use `Flask-RESTful` to structure the API.
+-   **Reasoning**: `Flask-RESTful` encourages a clean, resource-oriented architecture. It simplifies routing and enforces REST principles, making the API predictable and easy to consume. We defined a `UserResource` for single-user operations and a `UserListResource` for collection-level operations.
+
+#### 3. ORM and Schema Migrations
+
+User data is persisted in a relational database (SQLite).
+
+-   **Decision**: To use `Flask-SQLAlchemy` as the Object-Relational Mapper (ORM) and `Flask-Migrate` for managing database schema changes.
+-   **Reasoning**: An ORM abstracts away raw SQL, reducing boilerplate code and preventing common security vulnerabilities like SQL injection. `Flask-Migrate` provides a repeatable, version-controlled way to evolve the database schema as the application's data model changes, which is essential for maintainability.
+
+
+## How to Run This Project
 
 ### Prerequisites
-*   Python 3
-*   A virtual environment
+- Python 3
+- Node.js and npm
 
-### Installation & Setup
-
-1.  **Clone the repository.**
-
-2.  **Create and activate a virtual environment:**
-    ```bash
-    python -m venv .venv
-    source .venv/bin/activate
-    ```
-
-3.  **Install the dependencies:**
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-4.  **Initialize the database:**
-    The first time you run the application, the database file `project.db` will be created automatically.
-
-### Running the Server
-
-To start the development server, run the provided shell script:
-
+### Backend Setup
 ```bash
-./devserver.sh
+# Navigate to the api directory
+cd api
+
+# Create and activate a virtual environment
+python -m venv .venv
+source .venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Initialize and upgrade the database
+flask db upgrade
+
+# Run the Flask development server
+flask run --port=8080
 ```
 
-The API will be available at `http://localhost:8080`.
+### Frontend Setup
+```bash
+# In a new terminal, navigate to the frontend directory
+cd frontend
 
-## API Walkthrough
+# Install dependencies
+npm install
 
-You can interact with the API using a tool like `curl`.
-
-1.  **Create a new user (`POST /users`)**:
-    ```bash
-    curl -X POST -H "Content-Type: application/json" \
-    -d \'\'\'{"username": "testuser", "email": "test@example.com"}\'\'\' \
-    http://localhost:8080/users
-    ```
-
-2.  **Get a list of all users (`GET /users`)**:
-    ```bash
-    curl http://localhost:8080/users
-    ```
-
-3.  **Get a single user (`GET /users/<id>`)**:
-    ```bash
-    curl http://localhost:8080/users/1
-    ```
-
-4.  **Update a user (`PUT /users/<id>`)**:
-    ```bash
-    curl -X PUT -H "Content-Type: application/json" \
-    -d \'\'\'{"username": "testuser_updated"}\'\'\' \
-    http://localhost:8080/users/1
-    ```
-
-5.  **Delete a user (`DELETE /users/<id>`)**:
-    ```bash
-    curl -X DELETE http://localhost:8080/users/1
-    ```
+# Run the React development server
+npm start
+```
+The application will be available at `http://localhost:3000`.
