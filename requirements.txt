@@ -1,0 +1,19 @@
+# Dev Environment
+pip
+autopep8
+
+# App
+Flask
+Flask-SQLAlchemy
+Flask-Migrate
+Flask-Marshmallow
+marshmallow-sqlalchemy
+psycopg2-binary
+python-dotenv
+Flask-RESTful
+pytest
+
+psycopg2-binary
+celery
+redis
+Flask-Cors
